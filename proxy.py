@@ -17,7 +17,7 @@ def start_proxy():
                 print(f"[*] Accepted connection from {addr}")
                 client_handler = threading.Thread(
                     target=handle_client,
-                    args=(client_socket,)
+                    args=(client_socket, addr)
                 )
                 client_handler.daemon = True
                 client_threads.append(client_handler)
