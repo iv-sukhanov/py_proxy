@@ -1,12 +1,13 @@
 import socket
 import threading
+import argparse
 
-def start_proxy():
+def start_proxy(host: str, ports: int, connections: int):
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server.bind(('0.0.0.0', 8888))
-    server.listen(5)
+    server.bind((host, ports))
+    server.listen(connections)
     server.settimeout(1)
-    print("[*] Listening on 0.0.0.0:8888")
+    print(f"[*] Listening on {host}:{ports}")
 
     client_threads = []
 
@@ -63,7 +64,20 @@ def handle_client(client_socket, addr):
     client_socket.close()
     remote_socket.close()
 
-start_proxy()
+import argparse
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Simple Python Proxy Server")
+    parser.add_argument('--host', type=str, default='0.0.0.0', help='Host to bind the proxy server to')
+    parser.add_argument('--ports', type=int, default=8888, help='Port to bind the proxy server to')
+    parser.add_argument('--connections', type=int, default=5, help='Maximum number of simultaneous connections (backlog)')
+    return parser.parse_args()
+
+
+if __name__ == "__main__":
+    args = parse_args()
+    print(f"[*] Starting proxy server on {args.host}:{8888} with a backlog of {args.connections}")
+    start_proxy(args.host, args.ports, args.connections)
 
     
     
